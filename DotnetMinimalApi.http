@@ -1,0 +1,178 @@
+@DotnetMinimalApi_HostAddress = http://localhost:5000
+
+### 0. Health Check
+GET {{DotnetMinimalApi_HostAddress}}/health
+Accept: application/json
+
+### 0.1 OpenAPI JSON Specification
+GET {{DotnetMinimalApi_HostAddress}}/openapi/v1.json
+Accept: application/json
+
+### 0.2 Scalar UI
+GET {{DotnetMinimalApi_HostAddress}}/scalar/v1
+
+### 0.3 System Info
+GET {{DotnetMinimalApi_HostAddress}}/api/system/info
+Accept: application/json
+
+---
+### 1. Categories Endpoints
+
+### 1.1 Get All Categories
+GET {{DotnetMinimalApi_HostAddress}}/api/categories
+Accept: application/json
+
+### 1.2 Get Category by ID (with Top Products preview and valuation)
+GET {{DotnetMinimalApi_HostAddress}}/api/categories/1
+Accept: application/json
+
+### 1.3 Get Products in Category (Paginated)
+GET {{DotnetMinimalApi_HostAddress}}/api/categories/1/products?pageNumber=1&pageSize=5
+Accept: application/json
+
+### 1.4 Create New Category
+POST {{DotnetMinimalApi_HostAddress}}/api/categories
+Content-Type: application/json
+
+{
+  "name": "Smart Home & IoT",
+  "description": "Connected smart lighting, security cameras, and automation sensors."
+}
+
+### 1.5 Update Category
+PUT {{DotnetMinimalApi_HostAddress}}/api/categories/1
+Content-Type: application/json
+
+{
+  "name": "Electronics & Audio Gear",
+  "description": "Updated description for premium consumer electronics and studio sound equipment."
+}
+
+### 1.6 Delete Category (Fails if products exist - 409 Conflict)
+DELETE {{DotnetMinimalApi_HostAddress}}/api/categories/1
+
+---
+### 2. Products Endpoints
+
+### 2.1 Get Products (Default Pagination)
+GET {{DotnetMinimalApi_HostAddress}}/api/products
+Accept: application/json
+
+### 2.2 Search Products by Keyword
+GET {{DotnetMinimalApi_HostAddress}}/api/products?search=wireless
+Accept: application/json
+
+### 2.3 Filter Products by Category, Price Range, and InStockOnly
+GET {{DotnetMinimalApi_HostAddress}}/api/products?categoryId=1&minPrice=100&maxPrice=500&inStockOnly=true
+Accept: application/json
+
+### 2.4 Sort Products by Price Descending
+GET {{DotnetMinimalApi_HostAddress}}/api/products?sortBy=price&sortDescending=true&pageSize=5
+Accept: application/json
+
+### 2.5 Get Product by ID
+GET {{DotnetMinimalApi_HostAddress}}/api/products/1
+Accept: application/json
+
+### 2.6 Get Product by SKU
+GET {{DotnetMinimalApi_HostAddress}}/api/products/sku/ELEC-HDPH-001
+Accept: application/json
+
+### 2.7 Create Product (Success)
+POST {{DotnetMinimalApi_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "Zenith Ultra 27-inch 4K Monitor",
+  "sku": "ELEC-MON-004",
+  "description": "IPS Black panel with 98% DCI-P3 color gamut, USB-C 90W charging, and height adjustable stand.",
+  "price": 549.99,
+  "stockQuantity": 20,
+  "categoryId": 1,
+  "isActive": true
+}
+
+### 2.8 Create Product Validation Error (Demonstrates RFC 7807 ValidationProblem)
+POST {{DotnetMinimalApi_HostAddress}}/api/products
+Content-Type: application/json
+
+{
+  "name": "",
+  "sku": "invalid sku with spaces!",
+  "description": "Short",
+  "price": -10.00,
+  "stockQuantity": -5,
+  "categoryId": 9999,
+  "isActive": true
+}
+
+### 2.9 Update Product
+PUT {{DotnetMinimalApi_HostAddress}}/api/products/1
+Content-Type: application/json
+
+{
+  "name": "SonicPro Wireless ANC Headphones v2",
+  "sku": "ELEC-HDPH-001",
+  "description": "Updated high-fidelity wireless over-ear headphones with Bluetooth 5.4 and lossless spatial audio.",
+  "price": 319.99,
+  "stockQuantity": 50,
+  "categoryId": 1,
+  "isActive": true
+}
+
+### 2.10 Adjust Product Inventory Stock (+10 units)
+PATCH {{DotnetMinimalApi_HostAddress}}/api/products/1/stock
+Content-Type: application/json
+
+{
+  "adjustment": 10,
+  "reason": "Restocked from warehouse shipment"
+}
+
+### 2.11 Toggle Product Active Status (Deactivate)
+PATCH {{DotnetMinimalApi_HostAddress}}/api/products/1/status
+Content-Type: application/json
+
+{
+  "isActive": false
+}
+
+### 2.12 Delete Product
+DELETE {{DotnetMinimalApi_HostAddress}}/api/products/10
+
+---
+### 3. Reviews Endpoints
+
+### 3.1 Get Product Reviews (with rating calculation)
+GET {{DotnetMinimalApi_HostAddress}}/api/products/1/reviews
+Accept: application/json
+
+### 3.2 Add Review to Product
+POST {{DotnetMinimalApi_HostAddress}}/api/products/1/reviews
+Content-Type: application/json
+
+{
+  "authorName": "Chris Evans",
+  "rating": 5,
+  "comment": "Superb soundstage and build quality. The battery life easily surpasses the advertised 40 hours."
+}
+
+### 3.3 Delete Review
+DELETE {{DotnetMinimalApi_HostAddress}}/api/reviews/1
+
+---
+### 4. Analytics & Reports Endpoints
+
+### 4.1 Get Catalog Summary (Financial & Inventory Valuation)
+GET {{DotnetMinimalApi_HostAddress}}/api/analytics/summary
+Accept: application/json
+
+### 4.2 Get Low Stock Products (Threshold = 5)
+GET {{DotnetMinimalApi_HostAddress}}/api/analytics/low-stock?threshold=5
+Accept: application/json
+
+---
+### 5. System Reset
+
+### 5.1 Reset & Reseed Database
+POST {{DotnetMinimalApi_HostAddress}}/api/system/reset-and-seed
