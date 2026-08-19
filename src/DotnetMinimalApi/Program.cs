@@ -6,6 +6,41 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
+static IServiceCollection AddEndpoints(
+    this IServiceCollection services,
+    Assembly assembly)
+{
+    ServiceDescriptor[] serviceDescriptors = assembly
+        .DefinedTypes
+        .Where(type => type is { IsAbstract: false, IsInterface: false } &&
+                       type.IsAssignableTo(typeof(IEndpoint)))
+        .Select(type => ServiceDescriptor.Transient(typeof(IEndpoint), type))
+        .ToArray();
+
+    services.TryAddEnumerable(serviceDescriptors);
+
+    return services;
+}
+
+static IApplicationBuilder MapEndpoints(
+    this WebApplication app,
+    RouteGroupBuilder? routeGroupBuilder = null)
+{
+    IEnumerable<IEndpoint> endpoints = app.Services
+        .GetRequiredService<IEnumerable<IEndpoint>>();
+
+    IEndpointRouteBuilder builder =
+        routeGroupBuilder is null ? app : routeGroupBuilder;
+
+    foreach (IEndpoint endpoint in endpoints)
+    {
+        endpoint.MapEndpoint(builder);
+    }
+
+    return app;
+}
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // 1. Core Services & Problem Details (RFC 7807)
@@ -38,6 +73,8 @@ builder.Services.AddValidatorsFromAssemblyContaining<ProductCreateValidator>();
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<AppDbContext>("sqlite_db", tags: ["ready", "db"]);
 
+builder.Services.AddEndpoints(typeof(Program).Assembly);
+
 var app = builder.Build();
 
 // Configure Middleware Pipeline
@@ -61,6 +98,8 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => Results.Redirect("/scalar/v1"))
     .ExcludeFromDescription();
 
+app.MapEndpoints();
+/*
 // Health Check Endpoint
 app.MapHealthChecks("/health")
     .WithTags("System & Admin")
@@ -73,6 +112,7 @@ app.MapCategoryEndpoints();
 app.MapReviewEndpoints();
 app.MapAnalyticsEndpoints();
 app.MapSystemEndpoints();
+*/
 
 // Initialize and Seed Database
 using (var scope = app.Services.CreateScope())
@@ -86,3 +126,4 @@ app.Run();
 
 // Make Program public for integration test fixtures if needed
 public partial class Program { }
+

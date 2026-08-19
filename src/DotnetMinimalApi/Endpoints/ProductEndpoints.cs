@@ -9,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DotnetMinimalApi.Endpoints;
 
-public static class ProductEndpoints
+public class ProductEndpoints : IEndpoint
 {
-    public static RouteGroupBuilder MapProductEndpoints(this IEndpointRouteBuilder routes)
+    public void MapEndpoint(IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/products")
             .WithTags("Products")
@@ -63,7 +63,7 @@ public static class ProductEndpoints
         return group;
     }
 
-    public static async Task<Ok<PagedList<ProductResponseDto>>> GetAllProducts(
+    private async Task<Ok<PagedList<ProductResponseDto>>> GetAllProducts(
         [AsParameters] ProductFilterParams filter,
         AppDbContext db,
         CancellationToken ct)
@@ -137,7 +137,7 @@ public static class ProductEndpoints
         return TypedResults.Ok(pagedList);
     }
 
-    public static async Task<Results<Ok<ProductResponseDto>, ProblemHttpResult>> GetProductById(
+    private async Task<Results<Ok<ProductResponseDto>, ProblemHttpResult>> GetProductById(
         int id,
         AppDbContext db,
         CancellationToken ct)
@@ -159,7 +159,7 @@ public static class ProductEndpoints
         return TypedResults.Ok(ToResponseDto(product));
     }
 
-    public static async Task<Results<Ok<ProductResponseDto>, ProblemHttpResult>> GetProductBySku(
+    private async Task<Results<Ok<ProductResponseDto>, ProblemHttpResult>> GetProductBySku(
         string sku,
         AppDbContext db,
         CancellationToken ct)
@@ -181,7 +181,7 @@ public static class ProductEndpoints
         return TypedResults.Ok(ToResponseDto(product));
     }
 
-    public static async Task<Results<CreatedAtRoute<ProductResponseDto>, ValidationProblem, ProblemHttpResult>> CreateProduct(
+    private async Task<Results<CreatedAtRoute<ProductResponseDto>, ValidationProblem, ProblemHttpResult>> CreateProduct(
         ProductCreateDto dto,
         AppDbContext db,
         CancellationToken ct)
@@ -228,7 +228,7 @@ public static class ProductEndpoints
             routeValues: new { id = product.Id });
     }
 
-    public static async Task<Results<Ok<ProductResponseDto>, ValidationProblem, ProblemHttpResult>> UpdateProduct(
+    private async Task<Results<Ok<ProductResponseDto>, ValidationProblem, ProblemHttpResult>> UpdateProduct(
         int id,
         ProductUpdateDto dto,
         AppDbContext db,
@@ -287,7 +287,7 @@ public static class ProductEndpoints
         return TypedResults.Ok(ToResponseDto(product));
     }
 
-    public static async Task<Results<NoContent, ProblemHttpResult>> DeleteProduct(
+    private async Task<Results<NoContent, ProblemHttpResult>> DeleteProduct(
         int id,
         AppDbContext db,
         CancellationToken ct)
@@ -307,7 +307,7 @@ public static class ProductEndpoints
         return TypedResults.NoContent();
     }
 
-    public static async Task<Results<Ok<ProductResponseDto>, ProblemHttpResult>> AdjustProductStock(
+    private async Task<Results<Ok<ProductResponseDto>, ProblemHttpResult>> AdjustProductStock(
         int id,
         ProductStockAdjustmentDto dto,
         AppDbContext db,
@@ -341,7 +341,7 @@ public static class ProductEndpoints
         return TypedResults.Ok(ToResponseDto(product));
     }
 
-    public static async Task<Results<Ok<ProductResponseDto>, ProblemHttpResult>> ToggleProductStatus(
+    private async Task<Results<Ok<ProductResponseDto>, ProblemHttpResult>> ToggleProductStatus(
         int id,
         ProductStatusUpdateDto dto,
         AppDbContext db,

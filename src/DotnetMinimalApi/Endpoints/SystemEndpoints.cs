@@ -1,12 +1,28 @@
 using System.Runtime.InteropServices;
 using DotnetMinimalApi.Data;
 using Microsoft.AspNetCore.Http.HttpResults;
+using DotnetMinimalApi.Endpoints;
 
 namespace DotnetMinimalApi.Endpoints;
 
-public static class SystemEndpoints
+public class SystemEndpoints : IEndpoint
 {
-    public static RouteGroupBuilder MapSystemEndpoints(this IEndpointRouteBuilder routes)
+    public void MapEndpoint(IEndpointRouteBuilder routes)
+    {
+        var group = routes.MapGroup("/api/system")
+            .WithTags("System & Admin");
+
+        group.MapPost("/reset-and-seed", ResetAndSeedDatabase)
+            .WithName("ResetAndSeedDatabase")
+            .WithSummary("Reset and reseed SQLite database")
+            .WithDescription("Deletes existing data and reseeds fresh realistic sample data.");
+
+        group.MapGet("/info", GetSystemInfo)
+            .WithName("GetSystemInfo")
+            .WithSummary("Get system and runtime information")
+            .WithDescription("Provides metadata about the running .NET 9 Minimal API environment.");
+    }
+   /* public static RouteGroupBuilder MapSystemEndpoints(this IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/system")
             .WithTags("System & Admin");
@@ -22,9 +38,9 @@ public static class SystemEndpoints
             .WithDescription("Provides metadata about the running .NET 9 Minimal API environment.");
 
         return group;
-    }
+    }*/
 
-    public static async Task<Ok<object>> ResetAndSeedDatabase(
+    private async Task<Ok<object>> ResetAndSeedDatabase(
         AppDbContext db,
         ILogger<AppDbContext> logger,
         CancellationToken ct)
@@ -39,7 +55,7 @@ public static class SystemEndpoints
         });
     }
 
-    public static Ok<object> GetSystemInfo(IHostEnvironment env)
+    private Ok<object> GetSystemInfo(IHostEnvironment env)
     {
         return TypedResults.Ok<object>(new
         {

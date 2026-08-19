@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DotnetMinimalApi.Endpoints;
 
-public static class ReviewEndpoints
+public class ReviewEndpoints : IEndpoint
 {
-    public static RouteGroupBuilder MapReviewEndpoints(this IEndpointRouteBuilder routes)
+    public void MapEndpoint(IEndpointRouteBuilder routes)
     {
         var productReviewsGroup = routes.MapGroup("/api/products/{productId:int}/reviews")
             .WithTags("Reviews")
@@ -39,7 +39,7 @@ public static class ReviewEndpoints
         return productReviewsGroup;
     }
 
-    public static async Task<Results<Ok<ProductReviewSummaryDto>, ProblemHttpResult>> GetProductReviews(
+    private async Task<Results<Ok<ProductReviewSummaryDto>, ProblemHttpResult>> GetProductReviews(
         int productId,
         AppDbContext db,
         CancellationToken ct)
@@ -80,7 +80,7 @@ public static class ReviewEndpoints
         return TypedResults.Ok(summary);
     }
 
-    public static async Task<Results<CreatedAtRoute<ReviewResponseDto>, ValidationProblem, ProblemHttpResult>> CreateProductReview(
+    private async Task<Results<CreatedAtRoute<ReviewResponseDto>, ValidationProblem, ProblemHttpResult>> CreateProductReview(
         int productId,
         ReviewCreateDto dto,
         AppDbContext db,
@@ -120,7 +120,7 @@ public static class ReviewEndpoints
             routeValues: new { productId });
     }
 
-    public static async Task<Results<NoContent, ProblemHttpResult>> DeleteReview(
+    private async Task<Results<NoContent, ProblemHttpResult>> DeleteReview(
         int id,
         AppDbContext db,
         CancellationToken ct)

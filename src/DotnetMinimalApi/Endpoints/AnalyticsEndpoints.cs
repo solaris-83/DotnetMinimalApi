@@ -6,9 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DotnetMinimalApi.Endpoints;
 
-public static class AnalyticsEndpoints
+public class AnalyticsEndpoints : IEndpoint
 {
-    public static RouteGroupBuilder MapAnalyticsEndpoints(this IEndpointRouteBuilder routes)
+    public void MapEndpoint(IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/analytics")
             .WithTags("Analytics & Reports")
@@ -27,7 +27,7 @@ public static class AnalyticsEndpoints
         return group;
     }
 
-    public static async Task<Ok<CatalogSummaryDto>> GetCatalogSummary(
+    private async Task<Ok<CatalogSummaryDto>> GetCatalogSummary(
         AppDbContext db,
         IConfiguration config,
         CancellationToken ct)
@@ -86,7 +86,7 @@ public static class AnalyticsEndpoints
         return TypedResults.Ok(summary);
     }
 
-    public static async Task<Ok<IReadOnlyList<LowStockProductDto>>> GetLowStockProducts(
+    private async Task<Ok<IReadOnlyList<LowStockProductDto>>> GetLowStockProducts(
         int? threshold,
         AppDbContext db,
         IConfiguration config,

@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DotnetMinimalApi.Endpoints;
 
-public static partial class CategoryEndpoints
+public class CategoryEndpoints : IEndpoint
 {
-    public static RouteGroupBuilder MapCategoryEndpoints(this IEndpointRouteBuilder routes)
+    public void MapEndpoint(IEndpointRouteBuilder routes)
     {
         var group = routes.MapGroup("/api/categories")
             .WithTags("Categories")
@@ -53,7 +53,7 @@ public static partial class CategoryEndpoints
         return group;
     }
 
-    public static async Task<Ok<IReadOnlyList<CategoryResponseDto>>> GetAllCategories(
+    private async Task<Ok<IReadOnlyList<CategoryResponseDto>>> GetAllCategories(
         AppDbContext db,
         CancellationToken ct)
     {
@@ -73,7 +73,7 @@ public static partial class CategoryEndpoints
         return TypedResults.Ok<IReadOnlyList<CategoryResponseDto>>(categories);
     }
 
-    public static async Task<Results<Ok<CategoryDetailDto>, ProblemHttpResult>> GetCategoryById(
+    private async Task<Results<Ok<CategoryDetailDto>, ProblemHttpResult>> GetCategoryById(
         int id,
         AppDbContext db,
         CancellationToken ct)
@@ -119,7 +119,7 @@ public static partial class CategoryEndpoints
         return TypedResults.Ok(detail);
     }
 
-    public static async Task<Results<Ok<PagedList<ProductResponseDto>>, ProblemHttpResult>> GetCategoryProducts(
+    private async Task<Results<Ok<PagedList<ProductResponseDto>>, ProblemHttpResult>> GetCategoryProducts(
         int id,
         [AsParameters] PaginationParams pagination,
         AppDbContext db,
@@ -170,7 +170,7 @@ public static partial class CategoryEndpoints
         return TypedResults.Ok(new PagedList<ProductResponseDto>(items, totalCount, pageNumber, pageSize));
     }
 
-    public static async Task<Results<CreatedAtRoute<CategoryResponseDto>, ValidationProblem, ProblemHttpResult>> CreateCategory(
+    private async Task<Results<CreatedAtRoute<CategoryResponseDto>, ValidationProblem, ProblemHttpResult>> CreateCategory(
         CategoryCreateDto dto,
         AppDbContext db,
         CancellationToken ct)
@@ -211,7 +211,7 @@ public static partial class CategoryEndpoints
             routeValues: new { id = category.Id });
     }
 
-    public static async Task<Results<Ok<CategoryResponseDto>, ValidationProblem, ProblemHttpResult>> UpdateCategory(
+    private async Task<Results<Ok<CategoryResponseDto>, ValidationProblem, ProblemHttpResult>> UpdateCategory(
         int id,
         CategoryUpdateDto dto,
         AppDbContext db,
@@ -260,7 +260,7 @@ public static partial class CategoryEndpoints
         return TypedResults.Ok(responseDto);
     }
 
-    public static async Task<Results<NoContent, ProblemHttpResult>> DeleteCategory(
+    private async Task<Results<NoContent, ProblemHttpResult>> DeleteCategory(
         int id,
         AppDbContext db,
         CancellationToken ct)
