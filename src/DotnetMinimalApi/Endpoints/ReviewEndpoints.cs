@@ -35,8 +35,6 @@ public class ReviewEndpoints : IEndpoint
             .WithName("DeleteReview")
             .WithSummary("Delete a review")
             .WithDescription("Removes a specific review by ID.");
-
-        return productReviewsGroup;
     }
 
     private async Task<Results<Ok<ProductReviewSummaryDto>, ProblemHttpResult>> GetProductReviews(

@@ -22,23 +22,6 @@ public class SystemEndpoints : IEndpoint
             .WithSummary("Get system and runtime information")
             .WithDescription("Provides metadata about the running .NET 9 Minimal API environment.");
     }
-   /* public static RouteGroupBuilder MapSystemEndpoints(this IEndpointRouteBuilder routes)
-    {
-        var group = routes.MapGroup("/api/system")
-            .WithTags("System & Admin");
-
-        group.MapPost("/reset-and-seed", ResetAndSeedDatabase)
-            .WithName("ResetAndSeedDatabase")
-            .WithSummary("Reset and reseed SQLite database")
-            .WithDescription("Deletes existing data and reseeds fresh realistic sample data.");
-
-        group.MapGet("/info", GetSystemInfo)
-            .WithName("GetSystemInfo")
-            .WithSummary("Get system and runtime information")
-            .WithDescription("Provides metadata about the running .NET 9 Minimal API environment.");
-
-        return group;
-    }*/
 
     private async Task<Ok<object>> ResetAndSeedDatabase(
         AppDbContext db,

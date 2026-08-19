@@ -23,8 +23,6 @@ public class AnalyticsEndpoints : IEndpoint
             .WithName("GetLowStockProducts")
             .WithSummary("Get products requiring inventory restocking")
             .WithDescription("Lists products where stock level is at or below the specified threshold.");
-
-        return group;
     }
 
     private async Task<Ok<CatalogSummaryDto>> GetCatalogSummary(

@@ -59,8 +59,6 @@ public class ProductEndpoints : IEndpoint
             .WithName("ToggleProductStatus")
             .WithSummary("Toggle product active status")
             .WithDescription("Enables or disables product visibility in the store.");
-
-        return group;
     }
 
     private async Task<Ok<PagedList<ProductResponseDto>>> GetAllProducts(

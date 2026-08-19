@@ -49,8 +49,6 @@ public class CategoryEndpoints : IEndpoint
             .WithName("DeleteCategory")
             .WithSummary("Delete a category")
             .WithDescription("Deletes a category if it has no associated products.");
-
-        return group;
     }
 
     private async Task<Ok<IReadOnlyList<CategoryResponseDto>>> GetAllCategories(
