@@ -51,18 +51,17 @@ app.UseStatusCodePages();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-    app.MapScalarApiReference(options =>
+    app.MapScalarApiReference("api-docs", options =>
     {
         options
-            .WithTitle(".NET 9 Minimal API - Scalar Reference")
-            .WithTheme(ScalarTheme.Moon)
-            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+        .WithTitle(".NET 9 Minimal API - Scalar Reference")
+        .WithTheme(ScalarTheme.Moon)
+        .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
     });
 }
 
 // Redirect root to Scalar Documentation
-app.MapGet("/", () => Results.Redirect("/scalar/v1"))
-    .ExcludeFromDescription();
+//app.MapGet("/", () => Results.Redirect("/scalar/v1")).ExcludeFromDescription();
 
 app.MapEndpoints();
 /*
